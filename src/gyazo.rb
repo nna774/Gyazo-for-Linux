@@ -34,8 +34,8 @@ File.delete(tmpfile)
 # upload
 boundary = '----BOUNDARYBOUNDARY----'
 
-HOST = 'gyazo.com'
-CGI = '/upload.cgi'
+HOST = 'upload.gyazo.com'
+CGI = '/teams/upload'
 UA   = 'Gyazo/1.0'
 
 data = <<EOF
