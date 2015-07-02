@@ -49,7 +49,6 @@ metadata = JSON.generate({
   app: window_app,
   title: window_title,
   url: window_url,
-  note: "#{window_app}, #{window_title}\n#{window_url}"
 })
 
 # upload
