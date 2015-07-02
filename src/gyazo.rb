@@ -5,6 +5,8 @@ browser_cmd = 'xdg-open'
 clipboard_cmd = 'xclip'
 
 require 'net/http'
+require 'json'
+require 'open3'
 
 # get id
 idfile = ENV['HOME'] + "/.gyazo.id"
@@ -31,6 +33,25 @@ end
 imagedata = File.read(tmpfile)
 File.delete(tmpfile)
 
+active_window_id = `xprop -root | grep "_NET_ACTIVE_WINDOW(WINDOW)" | cut -d ' ' -f 5`.chomp
+out, err, status = Open3.capture3 "xwininfo -id #{active_window_id} | grep \"xwininfo: Window id: \"|sed \"s/xwininfo: Window id: #{active_window_id}//\""
+active_window_name = out.chomp.sub(/^\s*"/, "").sub(/"\s*$/, "")
+xuri = ""
+if active_window_name =~ /(Chrom(ium|e)|Mozilla Firefox|Iceweasel)/
+  xuri = `xdotool windowfocus #{active_window_id}; xdotool key "ctrl+l"; xdotool key "ctrl+c"; xclip -o`
+end
+
+window_app = active_window_name
+window_title = active_window_name
+window_url = xuri
+
+metadata = JSON.generate({
+  app: window_app,
+  title: window_title,
+  url: window_url,
+  note: "#{window_app}, #{window_title}\n#{window_url}"
+})
+
 # upload
 boundary = '----BOUNDARYBOUNDARY----'
 
@@ -43,6 +64,10 @@ data = <<EOF
 content-disposition: form-data; name="id"\r
 \r
 #{id}\r
+--#{boundary}\r
+content-disposition: form-data; name="metadata"\r
+\r
+#{metadata}\r
 --#{boundary}\r
 content-disposition: form-data; name="imagedata"; filename="gyazo.com"\r
 \r

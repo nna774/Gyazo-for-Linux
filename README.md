@@ -10,7 +10,7 @@ http://gyazo.com/
 
 Install Ruby and ImageMagick before installing Gyazo.
 
-    $ sudo apt-get install ruby imagemagick
+    $ sudo apt-get install ruby imagemagick x11-utils
     $ sudo dpkg -i gyazo_XXX_all.deb
 
 ### How to add a Gyazo icon to Ubuntu Unity Launcher
